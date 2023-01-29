@@ -1,7 +1,13 @@
 import { Alchemy, Network } from 'alchemy-sdk';
-import { useEffect, useState } from 'react';
-
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  RouterProvider,
+  Route,
+} from "react-router-dom";
 import './App.css';
+import { Block, Blocks, Home, Transaction, Transactions } from './pages';
+import { About } from './pages/about';
 
 // Refer to the README doc for more information about using API
 // keys in client-side code. You should never do this in production
@@ -17,20 +23,25 @@ const settings = {
 //
 // You can read more about the packages here:
 //   https://docs.alchemy.com/reference/alchemy-sdk-api-surface-overview#api-surface
-const alchemy = new Alchemy(settings);
+export const alchemy = new Alchemy(settings);
+
+
+const router = createBrowserRouter(createRoutesFromElements(
+  <>
+      <Route exact path='/' element={<Home />} />
+      <Route path='about' element={<About />}/>
+      <Route path='blocks' element={<Blocks />} />
+      <Route path='blocks/:id' element={<Block />}/>
+      <Route path='transactions' element={<Transactions />} />
+      <Route path='transactions/:id' element={<Transaction />}/> 
+  </>
+));
+
 
 function App() {
-  const [blockNumber, setBlockNumber] = useState();
 
-  useEffect(() => {
-    async function getBlockNumber() {
-      setBlockNumber(await alchemy.core.getBlockNumber());
-    }
+  return <RouterProvider router={router} />
 
-    getBlockNumber();
-  });
-
-  return <div className="App mt-10">Block Number: {blockNumber}</div>;
 }
 
 export default App;
